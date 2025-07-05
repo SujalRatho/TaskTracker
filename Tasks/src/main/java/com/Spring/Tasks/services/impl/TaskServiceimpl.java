@@ -7,6 +7,7 @@ import com.Spring.Tasks.domain.entities.TaskStatus;
 import com.Spring.Tasks.repositories.TaskListRepository;
 import com.Spring.Tasks.repositories.TaskRepository;
 import com.Spring.Tasks.services.TaskService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.InvalidIsolationLevelException;
 
@@ -88,5 +89,13 @@ public class TaskServiceimpl implements TaskService {
         task1.setPriority(task.getPriority());
         task1.setStatus(task.getStatus());
         return taskRepository.save(task1);
+    }
+
+    @Transactional // it its important because it ensures the delete operation happens within a database transaction
+    // so if any part of that delete operation fails then the entire operation is rolled back -- to maintain db consistency even if error occur during the deletion and its important to use
+    // @Transactional annotation when we delete data or attempt to make any changes such as updating
+    @Override
+    public void deleteTask(UUID taskListId, UUID taskId) {
+        taskRepository.deleteByTaskListIdAndId(taskListId,taskId);
     }
 }

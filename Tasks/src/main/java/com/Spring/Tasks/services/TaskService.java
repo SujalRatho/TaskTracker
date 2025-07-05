@@ -19,4 +19,5 @@ public interface TaskService {
     //update task including status as completed or not
     Task updateTask(UUID taskListId, UUID taskId, Task task);
 
+    void deleteTask(UUID taskListId, UUID taskId);
 }
