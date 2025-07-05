@@ -8,9 +8,11 @@ import com.Spring.Tasks.repositories.TaskListRepository;
 import com.Spring.Tasks.repositories.TaskRepository;
 import com.Spring.Tasks.services.TaskService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.InvalidIsolationLevelException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,6 +67,26 @@ public class TaskServiceimpl implements TaskService {
 
     @Override
     public Task updateTask(UUID taskListId, UUID taskId, Task task) {
+        if(task.getId()==null){
+            throw new IllegalArgumentException("Task must have an ID!");
+        }
+        if(!Objects.equals(taskId,task.getId())){
+            throw new IllegalArgumentException("Task IDs do not match!");
+        }
+        if(task.getPriority()==null){
+            throw new IllegalArgumentException("Task must have a valid priority!");
+        }
+        if(null == task.getStatus()){
+            throw new IllegalArgumentException("Task must have a valid status!");
+        }
 
+        Task task1 = taskRepository.findByTaskListIdAndId(taskListId,taskId).orElseThrow(()-> new IllegalArgumentException("Task not found!"));
+        task1.setTitle(task.getTitle());
+        task1.setDescription(task.getDescription());
+        task1.setDueDate(task.getDueDate());
+        task1.setUpdated(LocalDateTime.now());
+        task1.setPriority(task.getPriority());
+        task1.setStatus(task.getStatus());
+        return taskRepository.save(task1);
     }
 }
