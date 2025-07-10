@@ -8,7 +8,7 @@ public record TaskListDto(
         String title,
         String description,
         Integer count,
-        Double Progress,
+        Double progress,
         List<TaskDto> tasks
 ) {
 }
